@@ -2,7 +2,27 @@
 
 **Prerequisite:** `jq` (macOS: `brew install jq`; Windows: `winget install jqlang.jq`).
 
-## Everyone (macOS and Windows)
+## Quick install (recommended)
+
+From this folder:
+
+```bash
+./install.sh
+```
+
+It copies the slash commands and the Stop hook, **merges** the hook entry into
+`~/.claude/settings.json` (never replaces the file; timestamped backup first;
+re-running won't register a duplicate), installs the macOS refocus variants or
+the Windows toast helper automatically per platform, warns if another Stop
+notifier is already registered, and ends by firing **one real test
+notification** so you see it working. `./install.sh --uninstall` reverses it
+(removing only this kit's hook entry — other hooks untouched).
+
+Then **restart your Claude Code session** and arm it with `/notify-me test ping`.
+
+## Manual install — everyone (macOS and Windows)
+
+These steps are exactly what `install.sh` automates.
 
 1. Copy the slash commands:
 

@@ -31,8 +31,8 @@ at a time** and be specific, e.g. tell it:
 
 A vague "set this whole repo up" tends to make an agent attempt all four
 sections in one pass — including the two that deserve a security read first.
-Section 1 ships an `install.sh`; for the others, have the agent follow that
-section's INSTALL.md and **merge** any `settings.json` snippets into your
+Sections 1 and 2 ship an `install.sh`; for sections 3–4, have the agent follow
+that section's INSTALL.md and **merge** any `settings.json` snippets into your
 existing file (never paste them as the whole file).
 
 Before installing sections 3 or 4 on a managed device, read
@@ -80,7 +80,8 @@ toasts on Windows.
 **Windows?** The two core commands: yes, via a bundled no-module PowerShell
 toast helper (pending first-user verification). Refocus variants: macOS-only.
 
-**Get it:** [02-notify/](02-notify/)
+**Get it:** [02-notify/](02-notify/) — one command: `./install.sh` (fires a
+test notification so you see it working).
 
 ## 3 · Availability — "Unblock it when I'm away from my desk."
 

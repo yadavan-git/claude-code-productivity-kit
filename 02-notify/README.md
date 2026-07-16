@@ -70,6 +70,7 @@ in. Refocus variants: macOS only, no port planned.
 
 | File | Purpose |
 |---|---|
+| `install.sh` | One-command install (per-platform; `--uninstall` reverses) |
 | `commands/notify-me.md`, `commands/notify-me-ongoing.md`, `commands/notify-cancel.md` | The portable slash commands |
 | `commands/macos/notify-me-refocus.md`, `commands/macos/notify-me-ongoing-refocus.md` | The refocus variants (macOS) |
 | `scripts/notify-on-stop.sh` | The Stop hook (cross-platform dispatcher) |
