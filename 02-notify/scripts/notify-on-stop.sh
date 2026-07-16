@@ -55,18 +55,24 @@ esac
 tp=$(printf '%s' "$payload" | jq -r '.transcript_path // empty' 2>/dev/null)
 cwd=$(printf '%s' "$payload" | jq -r '.cwd // empty' 2>/dev/null)
 
-# Chat name for the notification subtitle: session name -> last AI title -> cwd basename
+# Chat name for the notification subtitle: last custom title (manual rename)
+# -> last AI title -> session name -> cwd basename. Transcript titles come
+# first: sessions/*.json .name is an auto-generated handle (e.g. "user-4f"),
+# not the conversation title.
 chat_name=""
-for f in "$HOME"/.claude/sessions/*.json; do
-  [ -f "$f" ] || continue
-  match=$(jq -r --arg sid "$sid" 'select(.sessionId == $sid) | .name // empty' "$f" 2>/dev/null)
-  if [ -n "$match" ]; then
-    chat_name="$match"
-    break
-  fi
-done
-if [ -z "$chat_name" ] && [ -n "$tp" ] && [ -f "$tp" ]; then
-  chat_name=$(jq -r 'select(.type=="ai-title") | .aiTitle // empty' "$tp" 2>/dev/null | tail -1)
+if [ -n "$tp" ] && [ -f "$tp" ]; then
+  chat_name=$(jq -r 'select(.type=="custom-title") | .customTitle // empty' "$tp" 2>/dev/null | tail -1)
+  [ -z "$chat_name" ] && chat_name=$(jq -r 'select(.type=="ai-title") | .aiTitle // empty' "$tp" 2>/dev/null | tail -1)
+fi
+if [ -z "$chat_name" ]; then
+  for f in "$HOME"/.claude/sessions/*.json; do
+    [ -f "$f" ] || continue
+    match=$(jq -r --arg sid "$sid" 'select(.sessionId == $sid) | .name // empty' "$f" 2>/dev/null)
+    if [ -n "$match" ]; then
+      chat_name="$match"
+      break
+    fi
+  done
 fi
 [ -z "$chat_name" ] && [ -n "$cwd" ] && chat_name=$(basename "$cwd")
 [ -z "$chat_name" ] && chat_name="Claude session"

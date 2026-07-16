@@ -52,9 +52,9 @@ in another app — and per-session arming with labels doesn't exist natively.
 
 `/notify-me-ongoing "tests"` → Claude writes `tests` into
 `~/.claude/session-env/<session-id>/notify-ongoing` → every Stop, the hook
-finds the flag, resolves a human-friendly session name (session name → AI
-title → directory name), fires the platform notifier, and appends an event to
-a local log. One-shot flags are consumed; ongoing flags persist until
+finds the flag, resolves the conversation title (manual rename → AI-generated
+title → session name → directory name), fires the platform notifier, and
+appends an event to a local log. One-shot flags are consumed; ongoing flags persist until
 `/notify-cancel`.
 
 ## Windows?
