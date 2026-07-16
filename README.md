@@ -24,6 +24,17 @@ at session start, so **restart your Claude Code session after installing
 anything**. Most scripts need `jq` (macOS: `brew install jq`; Windows:
 `winget install jqlang.jq`).
 
+**Installing with Claude Code?** That works well — point it at **one section
+at a time** and be specific, e.g. tell it:
+
+> *Read `01-statusline/INSTALL.md` in this repo and run its `./install.sh` for me.*
+
+A vague "set this whole repo up" tends to make an agent attempt all four
+sections in one pass — including the two that deserve a security read first.
+Section 1 ships an `install.sh`; for the others, have the agent follow that
+section's INSTALL.md and **merge** any `settings.json` snippets into your
+existing file (never paste them as the whole file).
+
 Before installing sections 3 or 4 on a managed device, read
 [SECURITY.md](SECURITY.md) — it's written to be forwarded to IT as-is.
 
@@ -48,7 +59,8 @@ terminal is visible.
 **Windows?** Statusline: yes (runs via Git Bash; documented support). Menu-bar
 widget: macOS-only.
 
-**Get it:** [01-statusline/](01-statusline/)
+**Get it:** [01-statusline/](01-statusline/) — one command: `./install.sh`
+(add `--full` on macOS for the menu-bar widget).
 
 ## 2 · Attention — "Tell me when it's done."
 
@@ -117,4 +129,6 @@ Claude Code uses for hooks on Windows — details in the install guide.
 ---
 
 *Maintained by Yadavan — questions, fixes, and Windows pilot reports: open an
-issue on this repo, or find me on the team chat.*
+issue on this repo, or find me on the team chat. The canonical home of this
+kit is `github.com/yadavan-git/claude-code-productivity-kit`; if you received
+it any other way than from me or that URL, check with me before installing.*

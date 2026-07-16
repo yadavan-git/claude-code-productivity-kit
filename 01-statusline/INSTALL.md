@@ -2,7 +2,28 @@
 
 **Prerequisite:** `jq` (macOS: `brew install jq`; Windows: `winget install jqlang.jq`).
 
-## Basic statusline (macOS, Linux, Windows)
+## Quick install (recommended)
+
+From this folder:
+
+```bash
+./install.sh          # basic statusline — macOS, Linux, Windows (Git Bash)
+./install.sh --full   # macOS: also the full tracker + SwiftBar menu-bar widget
+```
+
+The script copies the statusline into `~/.claude/hooks/`, **merges** the
+`statusLine` entry into `~/.claude/settings.json` (it never replaces the file,
+and takes a timestamped backup first), auto-detects your SwiftBar plugin
+folder, and finishes with a self-test that prints the rendered bar so you can
+see it working before you restart. Safe to re-run; `./install.sh --uninstall`
+reverses it. If a *different* statusLine is already configured it stops and
+tells you instead of overwriting (`--force` to replace).
+
+Then **restart your Claude Code session** — the bar appears after the first turn.
+
+## Manual install — basic statusline (macOS, Linux, Windows)
+
+These steps are exactly what `install.sh` automates.
 
 1. Copy the script:
 
@@ -12,7 +33,18 @@
    chmod +x ~/.claude/hooks/statusline.sh
    ```
 
-2. Add to `~/.claude/settings.json`:
+2. Add the `statusLine` key to `~/.claude/settings.json`.
+
+   ⚠️ **Merge this key into your existing file — do not paste the block below
+   as the whole file**, or you'll wipe every other setting you have (model,
+   permissions, hooks, …). The safe one-liner:
+
+   ```bash
+   tmp=$(mktemp) && jq '.statusLine = {type:"command", command:"bash \"$HOME/.claude/hooks/statusline.sh\""}' \
+     ~/.claude/settings.json > "$tmp" && mv "$tmp" ~/.claude/settings.json
+   ```
+
+   Which results in this key being present:
 
    ```json
    {
@@ -28,7 +60,7 @@
 
 3. Restart your Claude Code session. The bar appears after the first turn.
 
-## Full tracker + menu-bar widget (macOS only)
+## Manual install — full tracker + menu-bar widget (macOS only)
 
 1. Install [SwiftBar](https://swiftbar.app) (`brew install swiftbar`) and pick
    a plugin folder when it first launches.
@@ -58,6 +90,10 @@
 
 ## Notes
 
+- The 5h/7d numbers come from **Claude.ai Pro/Max subscription rate limits**
+  and appear after the session's first response. On API-key billing the
+  payload has no `rate_limits` at all, so the bar shows `ctx` only — expected
+  behavior, not a bug.
 - The rate-limit numbers are only as fresh as the current session's last
   API exchange; right after starting a session they can lag a few minutes.
   The full script guards against a laggy reading overwriting a good one.

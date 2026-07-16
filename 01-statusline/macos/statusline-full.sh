@@ -21,10 +21,15 @@ week_reset=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
 #  (b) new 5h reading sharply LOWER than what was just persisted, no 5h reset crossed,
 #      and the prior write was recent (<10 min) -> keep the prior figures (the 5h
 #      window doesn't fall like that except at a reset).
+#      Two escapes so (b) can't pin a stale-high figure forever: it is BYPASSED when the
+#      5h resets_at CHANGES vs what's persisted (a new window / account switch -> the drop
+#      is real, not a glitch), and when it does hold it keeps the HELD reading's ORIGINAL
+#      updated_at (not "now") so the <10-min freshness check actually expires.
 # Percentages are floored to integers on write (the payload sometimes sends floats
 # like 55.00000000000001). Fail-open: a non-integer/parse hiccup skips guard (b).
 _rl_file="$HOME/.claude/usage-status.json"
 _rl_ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+_ts_out=$_rl_ts   # timestamp to persist; a held reading keeps its ORIGINAL time (guards below)
 
 _five_out=${five_pct:-}
 _week_out=${week_pct:-}
@@ -44,6 +49,7 @@ if [ -f "$_rl_file" ]; then
     # (a) this render carried no rate-limit data -> keep prev, don't clobber with 0
     _five_out=$_p_five; [ -n "$_p_week" ] && _week_out=$_p_week
     _five_reset_out=$_p_fr; _week_reset_out=$_p_wr
+    _ts_out=${_p_ts:-$_rl_ts}   # keep the held reading's original time
   elif [ -n "$five_pct" ] && [ -n "$_p_five" ]; then
     # (b) backward-jump staleness guard
     _now_e=$(date -u +%s 2>/dev/null)
@@ -56,9 +62,13 @@ if [ -f "$_rl_file" ]; then
       _age=$(( _now_e - _p_e ))
       _crossed=0
       case "$_p_fr_int" in '' | *[!0-9]*) : ;; *) [ "$_now_e" -ge "$_p_fr_int" ] && _crossed=1 ;; esac
-      if [ "$_age" -ge 0 ] && [ "$_age" -lt 600 ] && [ "$_crossed" -eq 0 ] && [ "$_five_int" -lt $(( _p_five_int - 3 )) ]; then
+      # A changed 5h resets_at => a new window / account switch => the drop is real, don't hold.
+      _reset_changed=0
+      [ -n "$five_reset" ] && [ -n "$_p_fr" ] && [ "$five_reset" != "$_p_fr" ] && _reset_changed=1
+      if [ "$_age" -ge 0 ] && [ "$_age" -lt 600 ] && [ "$_crossed" -eq 0 ] && [ "$_reset_changed" -eq 0 ] && [ "$_five_int" -lt $(( _p_five_int - 3 )) ]; then
         _five_out=$_p_five; [ -n "$_p_week" ] && _week_out=$_p_week
         _five_reset_out=$_p_fr; _week_reset_out=$_p_wr
+        _ts_out=${_p_ts:-$_rl_ts}   # keep the held reading's original time so freshness can expire
       fi
     fi
   fi
@@ -69,7 +79,7 @@ _rl_json=$(jq -n \
   --arg week       "${_week_out:-0}" \
   --arg ctx        "${used_pct:-0}" \
   --arg model      "${model:-unknown}" \
-  --arg ts         "$_rl_ts" \
+  --arg ts         "$_ts_out" \
   --arg five_reset "${_five_reset_out:-}" \
   --arg week_reset "${_week_reset_out:-}" \
   '{

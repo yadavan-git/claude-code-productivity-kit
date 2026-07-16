@@ -33,6 +33,11 @@ and [`macos/claude-usage.30s.sh`](macos/claude-usage.30s.sh) is a
 bar**, color-shifting white→amber→red, with reset countdowns in the dropdown.
 Usage visibility without a terminal anywhere on screen.
 
+One caveat on the 5h/7d numbers: they're **Claude.ai Pro/Max subscription
+limits**, present after the session's first response. On API-key billing the
+payload carries no rate-limit data, so the bar shows `ctx` only — expected,
+not a bug.
+
 ## Windows?
 
 The basic statusline: yes — statusline commands are documented to run through
@@ -45,6 +50,7 @@ carries most of the value.
 
 | File | Purpose |
 |---|---|
+| `install.sh` | One-command install (`--full` for the macOS tracker+widget) |
 | `statusline.sh` | Portable statusline (render only) |
 | `macos/statusline-full.sh` | Statusline + persistence for the widget (macOS) |
 | `macos/claude-usage.30s.sh` | SwiftBar menu-bar widget (macOS) |

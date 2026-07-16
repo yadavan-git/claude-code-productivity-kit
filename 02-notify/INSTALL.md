@@ -19,7 +19,10 @@
    chmod +x ~/.claude/hooks/notify-on-stop.sh
    ```
 
-3. Register it in `~/.claude/settings.json` (merge with any existing `hooks` key):
+3. Register it in `~/.claude/settings.json` (merge with any existing `hooks`
+   key — and if a `Stop` entry already exists, check whether it's already a
+   notifier before adding this one: two Stop notifiers means duplicate banners
+   on every turn):
 
    ```json
    {
