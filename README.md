@@ -51,10 +51,11 @@ it every turn with session state (model, context %, both rate-limit windows)
 as JSON on stdin, and whatever it prints becomes a persistent bar at the
 bottom of your terminal.
 
-**What you get.** A color-coded statusline —
-`you:/Users/you/repo  Opus 4.8  ctx:12%  5h:27%  7d:8%` — plus, on macOS, an optional
-menu-bar widget (SwiftBar) showing usage with reset countdowns even when no
-terminal is visible.
+**What you get.** A color-coded statusline, right-aligned with the conversation
+title at the screen edge —
+`Opus 4.8  ctx:12%  5h:27%  7d:8%  Fixing the flaky auth test` — plus, on macOS,
+an optional menu-bar widget (SwiftBar) showing usage with reset countdowns even
+when no terminal is visible.
 
 **Windows?** Statusline: yes (runs via Git Bash; documented support). Menu-bar
 widget: macOS-only.

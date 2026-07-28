@@ -21,8 +21,10 @@ just formats it.
 ## What you get
 
 **Basic (everyone):** [`statusline.sh`](statusline.sh) renders
-`user:directory  model  ctx:12%  5h:27%  7d:8%` — color-coded, updated every
-turn. Portable macOS / Linux / Windows-Git-Bash; the only dependency is `jq`.
+`Opus 4.8  ctx:12%  5h:27%  7d:8%  <conversation title>` — right-aligned
+against the screen edge, color-coded, updated every turn. Falls back to the
+working directory on Claude Code versions whose payload has no `session_name`.
+Portable macOS / Linux / Windows-Git-Bash; the only dependency is `jq`.
 
 **Full tracker (macOS bonus):** the statusline payload dies with the terminal,
 so [`macos/statusline-full.sh`](macos/statusline-full.sh) also persists each
